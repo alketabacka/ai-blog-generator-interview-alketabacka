@@ -1,34 +1,31 @@
 import openai
 import os
+from dotenv import load_dotenv
 
-# Make sure you have set your OpenAI API key in an environment variable
+load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_blog_post(keyword, metrics):
-    prompt = f"""
-Write a detailed, engaging, SEO-friendly blog post about "{keyword}".
+    prompt = f"""Write a blog post about '{keyword}'.
 
-Make sure to:
-- Use the keyword naturally throughout the article
-- Mention the search volume: {metrics['search_volume']}
-- Mention the keyword difficulty: {metrics['keyword_difficulty']}
-- Mention the average CPC: ${metrics['avg_cpc']}
-- Include a short list with 3 placeholder affiliate links at the end
+    SEO Metrics:
+    - Search Volume: {metrics['search_volume']}
+    - Keyword Difficulty: {metrics['keyword_difficulty']}
+    - Avg CPC: {metrics['avg_cpc']}
 
-Use markdown format for headings and structure.
-
-Begin the blog post below:
-"""
+    Structure:
+    - Use headings and paragraphs
+    - Include at least 3 sections
+    - Insert placeholder affiliate links like {{AFF_LINK_1}}, {{AFF_LINK_2}}, etc.
+    """
 
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful SEO blog writer."},
+            {"role": "system", "content": "You are a helpful blog writer."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.7,
-        max_tokens=800
+        temperature=0.7
     )
 
-    blog_post = response['choices'][0]['message']['content']
-    return blog_post
+    return response['choices'][0]['message']['content']
